@@ -316,7 +316,7 @@ class Ruler:
         if len(names) > 0:
             raise RuntimeError("One or more measurement rulers contain an uneven number of vertex indices. It's required that they are pairs indicating the begin and end point of every line to draw. Rulers with uneven index count: %s" % ", ".join(names))
 
-    def getMeasure(self, human, measurementname, mode):
+    def getMeasure(self, human, measurementname, mode='metric'):
         measure_indices = self.Measures[measurementname]
 
         vecs = human.meshData.coord[measure_indices[:-1]] - human.meshData.coord[measure_indices[1:]]
