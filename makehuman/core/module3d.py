@@ -305,12 +305,13 @@ class Object3D(object):
             fvert[:,i] = other._inverse_parent_map[fvert[:,i]]
 
         # Filter out and remap unused UVs
-        fuvs = self.fuvs[self.face_mask]
-        uv_idx = np.unique(fuvs.reshape(-1))
-        inverse_uv_idx = - np.ones(self.texco.shape[0], dtype=np.int32)
-        inverse_uv_idx[uv_idx] = np.arange(uv_idx.shape[0], dtype=np.int32)
+        fuvs = self.fuvs[self.face_mask]  # Only keep UV indices of visible faces
+        uv_idx = np.unique(fuvs.reshape(-1))  # All indices of referenced UV coordinates
+        # We will remove the texco no longer referenced by fuvs, create a mapping to the new indices in texco
+        old_to_new_idx = - np.ones(self.texco.shape[0], dtype=np.int32)  # maps old texco index to new texco index, -1 if removed
+        old_to_new_idx[uv_idx] = np.arange(uv_idx.shape[0], dtype=np.int32)
         for i in xrange(self.vertsPerPrimitive):
-            fuvs[:,i] = inverse_uv_idx[fuvs[:,i]]
+            fuvs[:,i] = old_to_new_idx[fuvs[:,i]]
 
         other.setUVs(self.texco[uv_idx])
 
